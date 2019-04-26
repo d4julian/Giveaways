@@ -74,7 +74,7 @@ public class Giveaways {
                 .permission(Permissions.START)
                 .arguments(
                         GenericArguments.integer(format("seconds")),
-                        GenericArguments.remainingJoinedStrings(format("giveaway"))
+                        GenericArguments.remainingJoinedStrings(format("prize"))
                 )
                 .executor(new StartGiveaway(this))
                 .build();

@@ -37,7 +37,7 @@ public class StartGiveaway implements CommandExecutor {
         if (!main.giveawayRunning) {
 
             int seconds = args.<Integer>getOne("seconds").get();
-            String message = args.<String>getOne("giveaway").get();
+            String message = args.<String>getOne("prize").get();
 
             main.giveawaySeconds = seconds;
 
@@ -133,7 +133,7 @@ public class StartGiveaway implements CommandExecutor {
                 .footer(
                         Text.builder()
                                 .append(main.format(PluginConfiguration.Pagination.footer))
-                                .onHover(TextActions.showText(main.format("&6Click me to join the giveaway")))
+                                .onHover(TextActions.showText(main.format("&6/giveaway join")))
                                 .onClick(TextActions.executeCallback(cmd -> {
                                     Player user = (Player) cmd;
                                     if (main.giveawayRunning) {

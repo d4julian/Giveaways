@@ -38,7 +38,7 @@ public class PluginConfiguration {
         public static String padding = "&7&m-";
 
         @Setting (comment = "Insert Pagination title here")
-        public static String title = "&7&l{pluginName}";
+        public static String title = "&6{pluginName}";
 
         @Setting (comment = "Adds space in between lines to look nicer!")
         public static boolean addSpace = true;
@@ -49,7 +49,7 @@ public class PluginConfiguration {
     public static class ScoreBoard {
 
         @Setting (comment = "Title for top of scoreboard")
-        public static String title = "&6{pluginName}";
+        public static String title = "&7&l{pluginName}";
 
         @Setting (comment = "Text for time remaining line on scoreboard")
         public static String timeRemaining = "&6Seconds Remaining:";
