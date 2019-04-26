@@ -1,5 +1,6 @@
 # Giveaways - Simple plugin to start giveaways for the whole server!
-![Image](https://cdn.discordapp.com/attachments/529496121790169119/549811951450980362/b42318a6b4d89a607035038d5d31ba9c.png)
+![Image](https://i.gyazo.com/60cfb5fcfd579d17d95172bfbc7b606b.png)
+![Image](https://i.gyazo.com/94645cf6e74e273ab02c99710ba8159e.png)
 
 ## Support
 If you need any help, please contact us on [Discord](https://discord.gg/mGgfyaS)
