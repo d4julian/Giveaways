@@ -7,6 +7,7 @@ If you need any help, please contact us on [Discord](https://discord.gg/mGgfyaS)
 
 ## Commands/Permissions
 **/giveaway start <seconds> <prize...>** - `giveaways.start`
+    
 **/giveaway join** - `giveaways.join`
 
 ## Configuration
