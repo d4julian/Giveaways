@@ -2,7 +2,6 @@ package net.dirtcraft.plugin.giveaways.Commands;
 
 import net.dirtcraft.plugin.giveaways.Configuration.PluginConfiguration;
 import net.dirtcraft.plugin.giveaways.Giveaways;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -17,7 +16,6 @@ import org.spongepowered.api.scoreboard.objective.Objective;
 import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
-import org.spongepowered.api.text.channel.MessageReceiver;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -44,11 +42,9 @@ public class StartGiveaway implements CommandExecutor {
             if (source instanceof Player) {
                 Player player = (Player) source;
 
-                for (MessageReceiver receiver : main.getBroadcast().getMembers()) {
-                    giveawayStart(receiver, PluginConfiguration.Messages.startedGiveaway
+                    giveawayStart(PluginConfiguration.Messages.startedGiveaway
                             .replace("{playerName}", player.getName())
                             .replace("{giveaway}", message));
-                }
 
                 runGiveaway(seconds, message, player);
 
@@ -78,9 +74,9 @@ public class StartGiveaway implements CommandExecutor {
                     obj.getOrCreateScore(main.format(PluginConfiguration.ScoreBoard.timeRemaining)).setScore(main.giveawaySeconds);
                     obj.getOrCreateScore(main.format(PluginConfiguration.ScoreBoard.participants)).setScore(main.list.size());
 
-                    for (Player p : Sponge.getServer().getOnlinePlayers()) {
-                        p.setScoreboard(board);
-                    }
+                    main.getOnlinePlayers().forEach(online ->
+                                    online.setScoreboard(board)
+                            );
                 })
                 .submit(main.instance);
         Task count = Task.builder()
@@ -95,17 +91,17 @@ public class StartGiveaway implements CommandExecutor {
                 .name("Running a giveaway")
                 .delay(seconds, TimeUnit.SECONDS)
                 .execute(() -> {
-                    for (Player receiver : Sponge.getServer().getOnlinePlayers()) {
                         if (main.list.size() == 0) {
-                            receiver.sendMessage(main.format(PluginConfiguration.Messages.noParticipants
-                            .replace("{playerName}", player.getName())));
+                            main.getOnlinePlayers().forEach(online ->
+                                    online.sendMessage(main.format(PluginConfiguration.Messages.noParticipants
+                                            .replace("{playerName}", player.getName())))
+                            );
                         } else {
                             Random r = new Random();
-                            onGiveaway(receiver, PluginConfiguration.Messages.completedGiveaway
+                            onGiveaway(PluginConfiguration.Messages.completedGiveaway
                                     .replace("{winner}", main.list.get(r.nextInt(main.list.size())))
                                     .replace("{giveaway}", giveaway));
                         }
-                    }
                     main.giveawayRunning = false;
                     main.giveawaySeconds = 0;
                     main.list.clear();
@@ -117,20 +113,18 @@ public class StartGiveaway implements CommandExecutor {
                 .submit(main.instance);
     }
 
-    private PaginationList giveawayStart(MessageReceiver receiver, String giveaway) {
+    private void giveawayStart(String giveaway) {
         ArrayList<Text> contents = new ArrayList<>();
         if (PluginConfiguration.Pagination.addSpace) {
             contents.add(main.format("\n" + giveaway + "\n"));
         } else {
             contents.add(main.format(giveaway));
         }
-
-        return
-                PaginationList.builder()
-                .title(main.format(PluginConfiguration.Pagination.title.replace("{pluginName}", main.getContainer().getName())))
-                .padding(main.format(PluginConfiguration.Pagination.padding))
-                .contents(contents)
-                .footer(
+                PaginationList.Builder p = PaginationList.builder();
+                p.title(main.format(PluginConfiguration.Pagination.title.replace("{pluginName}", main.getContainer().getName())));
+                p.padding(main.format(PluginConfiguration.Pagination.padding));
+                p.contents(contents);
+                p.footer(
                         Text.builder()
                                 .append(main.format(PluginConfiguration.Pagination.footer))
                                 .onHover(TextActions.showText(main.format("&6/giveaway join")))
@@ -150,11 +144,13 @@ public class StartGiveaway implements CommandExecutor {
                                     }
                                 }))
                                 .build()
-                )
-                        .sendTo(receiver);
+                );
+                main.getOnlinePlayers().forEach(online ->
+                        p.sendTo(online)
+                        );
     }
 
-    private PaginationList onGiveaway(MessageReceiver receiver, String giveaway) {
+    private void onGiveaway(String giveaway) {
 
         ArrayList<Text> contents = new ArrayList<>();
         if (PluginConfiguration.Pagination.addSpace) {
@@ -162,18 +158,18 @@ public class StartGiveaway implements CommandExecutor {
         } else {
             contents.add(main.format(giveaway));
         }
-
-        return
-                PaginationList.builder()
-                        .title(main.format(PluginConfiguration.Pagination.title.replace("{pluginName}", main.getContainer().getName())))
-                        .padding(main.format(PluginConfiguration.Pagination.padding))
-                        .contents(contents)
-                        .sendTo(receiver);
+                PaginationList.Builder p = PaginationList.builder();
+                        p.title(main.format(PluginConfiguration.Pagination.title.replace("{pluginName}", main.getContainer().getName())));
+                        p.padding(main.format(PluginConfiguration.Pagination.padding));
+                        p.contents(contents);
+                        main.getOnlinePlayers().forEach(online ->
+                                p.sendTo(online)
+                                );
     }
 
     private void clearScoreboard() {
-        for (Player p : Sponge.getServer().getOnlinePlayers()) {
-            p.getScoreboard().clearSlot(DisplaySlots.SIDEBAR);
-        }
+        main.getOnlinePlayers().forEach(online ->
+                online.getScoreboard().clearSlot(DisplaySlots.SIDEBAR)
+        );
     }
 }

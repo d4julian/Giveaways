@@ -11,16 +11,17 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.DefaultConfig;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 @Plugin(
         id = "giveaways",
@@ -96,8 +97,8 @@ public class Giveaways {
         return container;
     }
 
-    public MessageChannel getBroadcast() {
-        return Sponge.getServer().getBroadcastChannel();
+    public Collection<Player> getOnlinePlayers() {
+        return Sponge.getServer().getOnlinePlayers();
     }
 
     public Text format(String message) {

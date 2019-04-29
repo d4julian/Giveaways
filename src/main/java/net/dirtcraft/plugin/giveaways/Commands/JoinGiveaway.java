@@ -2,6 +2,7 @@ package net.dirtcraft.plugin.giveaways.Commands;
 
 import net.dirtcraft.plugin.giveaways.Configuration.PluginConfiguration;
 import net.dirtcraft.plugin.giveaways.Giveaways;
+import net.dirtcraft.plugin.giveaways.Permissions;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -23,13 +24,17 @@ public class JoinGiveaway implements CommandExecutor {
         if (main.giveawayRunning) {
             if (source instanceof Player) {
                 Player player = (Player) source;
-                if (!main.list.contains(player.getName())) {
-                    player.sendMessage(main.format(PluginConfiguration.Messages.joinGiveaway
-                            .replace("{position}", Integer.toString(main.list.size() + 1)
-                                    .replace("{playerName}", player.getName()))));
-                    main.list.add(player.getName());
+                if (player.hasPermission(Permissions.JOIN)) {
+                    if (!main.list.contains(player.getName())) {
+                        player.sendMessage(main.format(PluginConfiguration.Messages.joinGiveaway
+                                .replace("{position}", Integer.toString(main.list.size() + 1)
+                                        .replace("{playerName}", player.getName()))));
+                        main.list.add(player.getName());
+                    } else {
+                        throw new CommandException(main.format("&cYou are already in the giveaway!"));
+                    }
                 } else {
-                    throw new CommandException(main.format("&cYou are already in the giveaway!"));
+                    throw new CommandException(main.format("&cYou don't have permission to enter giveaways!"));
                 }
             } else {
                 throw new CommandException(main.format("&cYou must be a player to join a giveaway!"));
